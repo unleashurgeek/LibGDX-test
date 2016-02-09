@@ -4,18 +4,21 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
 public class GameInput implements InputProcessor {
 	
 	private final GameManager manager;
 	
 	private final Array<Integer> heldKeys;
+	private final Array<Integer> mouseHeldKeys;
 	private Vector2 mousePos;
 	
 	public GameInput(GameManager manager) {
 		this.manager = manager;
 		
 		heldKeys = new Array<Integer>();
+		mouseHeldKeys = new Array<Integer>();
 		mousePos = new Vector2();
 	}
 	
@@ -23,7 +26,20 @@ public class GameInput implements InputProcessor {
 		for (int key : heldKeys)
 			keyPressed(key);
 		
+		for (int button : mouseHeldKeys)
+			mousePressed(button);
+		
 		this.manager.getPlayer().calculateGunDirection(this.manager.getCamera().unproject(mousePos));
+	}
+	
+	public boolean mousePressed(int button) {
+		switch (button) {
+		
+		case 0:
+			this.manager.getPlayer().shoot();
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean keyPressed(int keycode) {
@@ -54,7 +70,6 @@ public class GameInput implements InputProcessor {
 		case Keys.D:
 			this.manager.getPlayer().movePlayer(1, 0);
 			return true;
-			
 		}
 		return false;
 	}
@@ -83,23 +98,13 @@ public class GameInput implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		switch (button) {
-		
-		// Left Click
-		case 0:
-			this.manager.getPlayer().shoot();
-			return true;
-		// Right Click
-		case 1:
-			
-			return true;
-			
-		}
+		mouseHeldKeys.add(button);
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		mouseHeldKeys.removeValue(button, true);
 		return false;
 	}
 	
