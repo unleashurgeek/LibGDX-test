@@ -7,15 +7,13 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameInput implements InputProcessor {
 	
-	private final Player player;
-	private final GameCamera camera;
+	private final GameManager manager;
 	
 	private final Array<Integer> heldKeys;
 	private Vector2 mousePos;
 	
-	public GameInput(Player player, GameCamera camera) {
-		this.player = player;
-		this.camera = camera;
+	public GameInput(GameManager manager) {
+		this.manager = manager;
 		
 		heldKeys = new Array<Integer>();
 		mousePos = new Vector2();
@@ -24,13 +22,15 @@ public class GameInput implements InputProcessor {
 	public void update() {
 		for (int key : heldKeys)
 			keyPressed(key);
+		
+		this.manager.getPlayer().calculateGunDirection(this.manager.getCamera().unproject(mousePos));
 	}
 	
 	public boolean keyPressed(int keycode) {
 		switch (keycode) {
 		
 		case Keys.R:
-			camera.rumble(.1f);
+			this.manager.getCamera().rumble(.05f);
 			return true;
 		
 		}
@@ -43,16 +43,16 @@ public class GameInput implements InputProcessor {
 		switch (keycode) {
 		
 		case Keys.W:
-			player.movePlayer(0, 1);
+			this.manager.getPlayer().movePlayer(0, 1);
 			return true;
 		case Keys.A:
-			player.movePlayer(-1, 0);
+			this.manager.getPlayer().movePlayer(-1, 0);
 			return true;
 		case Keys.S:
-			player.movePlayer(0, -1);
+			this.manager.getPlayer().movePlayer(0, -1);
 			return true;
 		case Keys.D:
-			player.movePlayer(1, 0);
+			this.manager.getPlayer().movePlayer(1, 0);
 			return true;
 			
 		}
@@ -65,19 +65,41 @@ public class GameInput implements InputProcessor {
 		switch (keycode) {
 		
 		case Keys.W:
-			player.movePlayer(0, -1);
+			this.manager.getPlayer().movePlayer(0, -1);
 			return true;
 		case Keys.A:
-			player.movePlayer(1, 0);
+			this.manager.getPlayer().movePlayer(1, 0);
 			return true;
 		case Keys.S:
-			player.movePlayer(0, 1);
+			this.manager.getPlayer().movePlayer(0, 1);
 			return true;
 		case Keys.D:
-			player.movePlayer(-1, 0);
+			this.manager.getPlayer().movePlayer(-1, 0);
 			return true;
 			
 		}
+		return false;
+	}
+	
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		switch (button) {
+		
+		// Left Click
+		case 0:
+			this.manager.getPlayer().shoot();
+			return true;
+		// Right Click
+		case 1:
+			
+			return true;
+			
+		}
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 	
@@ -98,10 +120,4 @@ public class GameInput implements InputProcessor {
 	
 	@Override
 	public boolean keyTyped(char character) { return false; }
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
 }

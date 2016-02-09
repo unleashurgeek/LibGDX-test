@@ -2,6 +2,7 @@ package edu.uci.vgdc.proceduralgame;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -44,6 +45,13 @@ public class Player {
 		engine.addEntity(this.playerEntity);
 	}
 	
+	public void calculateGunDirection(Vector2 mouse) {
+		float direction = (float)MathUtils.atan2(mouse.y - this.box2DComponent.body.getPosition().y, mouse.x - this.box2DComponent.body.getPosition().x);
+		if ((direction) < 0) direction += 360;
+		
+		
+	}
+	
 	public void movePlayer(float x, float y) {
 		direction.add(x, y);
 		if (direction.x != 0) direction.x /= Math.abs(direction.x);
@@ -52,5 +60,9 @@ public class Player {
 	
 	public void update() {
 		this.box2DComponent.body.setLinearVelocity(new Vector2(direction.x, direction.y).clamp(-1, 1).scl(velocity));
+	}
+	
+	public void shoot() {
+		
 	}
 }

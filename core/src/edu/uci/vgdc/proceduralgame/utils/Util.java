@@ -9,7 +9,7 @@ public class Util {
 	public static final float PIXELS_TO_METERS = .02f;
 	public static final float METERS_TO_PIXELS = 50f;
 	
-	private static ShapeRenderer debugRenderer = new ShapeRenderer();
+	public static ShapeRenderer debugRenderer = new ShapeRenderer();
 	
 	public static float convertToMeters(float pixels) {
 		return pixels * PIXELS_TO_METERS;
@@ -37,5 +37,14 @@ public class Util {
 		debugRenderer.line(topRight, new Vector2(topRight.x, bottomLeft.y));
 		debugRenderer.line(topRight, new Vector2(bottomLeft.x, topRight.y));
 		debugRenderer.end();
+	}
+	
+	public static void DrawSquare(Vector2 bottomLeft, Vector2 topRight)
+	{
+		debugRenderer.setColor(Color.WHITE);
+		debugRenderer.line(bottomLeft, new Vector2(bottomLeft.x, topRight.y));
+		debugRenderer.line(bottomLeft, new Vector2(topRight.x, bottomLeft.y));
+		debugRenderer.line(topRight, new Vector2(topRight.x, bottomLeft.y));
+		debugRenderer.line(topRight, new Vector2(bottomLeft.x, topRight.y));
 	}
 }
